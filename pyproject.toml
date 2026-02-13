@@ -1,0 +1,18 @@
+[project]
+name = "zele-econometric-models"
+version = "0.1.0"
+description = "Modelos econométricos para Zele Pereira"
+authors = [
+    {name = "Zele Pereira"}
+]
+readme = "README.md"
+requires-python = "^3.12"
+dependencies = [
+    "scikit-learn (>=1.8.0,<2.0.0)",
+    "fastapi (>=0.129.0,<0.130.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
