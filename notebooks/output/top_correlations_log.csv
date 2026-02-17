@@ -1,11 +1,11 @@
 Variable 1,Variable 2,Correlación
-PIB a precios corrientes (miles de millones de pesos),Valor Agregado Pereira,0.9976422026400993
-Población Risaralda,Población Pereira,0.9910973041832217
-Tasa de Desocupación (TD) Risaralda,Tasa de Desocupación (TD) Pereira ]A.M.,0.9886136542680847
-PIB a precios corrientes (miles de millones de pesos),Población Pereira,0.9877899269504868
-PIB a precios corrientes (miles de millones de pesos),Población Risaralda,0.981854789540725
-Valor Agregado Pereira,Población Pereira,0.9670465773625072
-Total empresas Risaralda,Población Pereira,0.9652913279155046
-Valor Agregado Pereira,Total empresas Risaralda,0.9582680206064618
-Valor Agregado Pereira,Población Risaralda,0.9548763681041349
-Total empresas Risaralda,Población Risaralda,0.9544156796581108
+PIB,VAP,0.9976422026400993
+POB Risaralda,POB Pereira,0.9910973041832217
+TD,TD A.M.,0.9886136542680847
+PIB,POB Pereira,0.9877899269504868
+PIB,POB Risaralda,0.981854789540725
+VAP,POB Pereira,0.9670465773625072
+EMP,POB Pereira,0.9652913279155046
+VAP,EMP,0.9582680206064618
+VAP,POB Risaralda,0.9548763681041349
+EMP,POB Risaralda,0.9544156796581108
