@@ -1,1 +1,1 @@
-"""Modelos econométricos y artefactos."""
+"""Modelos SQLAlchemy y artefactos de modelos econométricos."""
