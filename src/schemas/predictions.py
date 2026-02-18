@@ -6,28 +6,24 @@ from pydantic import BaseModel, Field
 class EconGrowthPredictionRequest(BaseModel):
     """Solicitud de predicción para el modelo de crecimiento económico.
 
-    Variables explicativas (tasas de cambio logarítmicas):
-        - delta_ln_EXP: Δln(Exportaciones)
-        - delta_ln_IMP: Δln(Importaciones)
-        - delta_ln_REM: Δln(Remesas)
-        - delta_ln_INV: Δln(Inversión)
-        - delta_ln_EMP: Δln(Empresas)
+    Todos los campos son opcionales. Si no se proporcionan, se usan los valores
+    guardados del perfil del usuario o los valores por defecto de la variable.
     """
 
-    delta_ln_EXP: float = Field(
-        ..., description="Tasa de cambio logarítmica de las exportaciones"
+    delta_ln_EXP: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las exportaciones"
     )
-    delta_ln_IMP: float = Field(
-        ..., description="Tasa de cambio logarítmica de las importaciones"
+    delta_ln_IMP: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las importaciones"
     )
-    delta_ln_REM: float = Field(
-        ..., description="Tasa de cambio logarítmica de las remesas"
+    delta_ln_REM: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las remesas"
     )
-    delta_ln_INV: float = Field(
-        ..., description="Tasa de cambio logarítmica de la inversión neta"
+    delta_ln_INV: float | None = Field(
+        None, description="Tasa de cambio logarítmica de la inversión neta"
     )
-    delta_ln_EMP: float = Field(
-        ..., description="Tasa de cambio logarítmica del número de empresas"
+    delta_ln_EMP: float | None = Field(
+        None, description="Tasa de cambio logarítmica del número de empresas"
     )
 
     model_config = {"json_schema_extra": {
@@ -46,28 +42,24 @@ class EconGrowthPredictionRequest(BaseModel):
 class UnemploymentPredictionRequest(BaseModel):
     """Solicitud de predicción para el modelo de tasa de desempleo.
 
-    Variables explicativas:
-        - delta_ln_PIB: Δln(PIB)
-        - delta_ln_EXP: Δln(Exportaciones)
-        - delta_ln_IMP: Δln(Importaciones)
-        - IPM: Incidencia de Pobreza Multidimensional
-        - IDC: Índice de Competitividad Departamental
+    Todos los campos son opcionales. Si no se proporcionan, se usan los valores
+    guardados del perfil del usuario o los valores por defecto de la variable.
     """
 
-    delta_ln_PIB: float = Field(
-        ..., description="Tasa de cambio logarítmica del PIB"
+    delta_ln_PIB: float | None = Field(
+        None, description="Tasa de cambio logarítmica del PIB"
     )
-    delta_ln_EXP: float = Field(
-        ..., description="Tasa de cambio logarítmica de las exportaciones"
+    delta_ln_EXP: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las exportaciones"
     )
-    delta_ln_IMP: float = Field(
-        ..., description="Tasa de cambio logarítmica de las importaciones"
+    delta_ln_IMP: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las importaciones"
     )
-    IPM: float = Field(
-        ..., description="Incidencia de Pobreza Multidimensional de Risaralda"
+    IPM: float | None = Field(
+        None, description="Incidencia de Pobreza Multidimensional de Risaralda"
     )
-    IDC: float = Field(
-        ..., description="Índice de Competitividad Departamental (valor normalizado)"
+    IDC: float | None = Field(
+        None, description="Índice de Competitividad Departamental (valor normalizado)"
     )
 
     model_config = {"json_schema_extra": {
@@ -86,20 +78,18 @@ class UnemploymentPredictionRequest(BaseModel):
 class BusinessGrowthPredictionRequest(BaseModel):
     """Solicitud de predicción para el modelo de crecimiento empresarial.
 
-    Variables explicativas (tasas de cambio logarítmicas):
-        - delta_ln_PIB: Δln(PIB)
-        - delta_ln_EXP: Δln(Exportaciones)
-        - delta_ln_REM: Δln(Remesas)
+    Todos los campos son opcionales. Si no se proporcionan, se usan los valores
+    guardados del perfil del usuario o los valores por defecto de la variable.
     """
 
-    delta_ln_PIB: float = Field(
-        ..., description="Tasa de cambio logarítmica del PIB"
+    delta_ln_PIB: float | None = Field(
+        None, description="Tasa de cambio logarítmica del PIB"
     )
-    delta_ln_EXP: float = Field(
-        ..., description="Tasa de cambio logarítmica de las exportaciones"
+    delta_ln_EXP: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las exportaciones"
     )
-    delta_ln_REM: float = Field(
-        ..., description="Tasa de cambio logarítmica de las remesas"
+    delta_ln_REM: float | None = Field(
+        None, description="Tasa de cambio logarítmica de las remesas"
     )
 
     model_config = {"json_schema_extra": {
@@ -127,4 +117,7 @@ class PredictionResponse(BaseModel):
     )
     r_squared: float = Field(
         ..., description="Coeficiente de determinación (R²) del modelo"
+    )
+    values_used: dict[str, float] = Field(
+        ..., description="Valores de las variables usados para la predicción"
     )
