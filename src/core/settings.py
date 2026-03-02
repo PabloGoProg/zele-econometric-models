@@ -4,12 +4,16 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Settings for the application."""
 
+    NODE_ENV: str = "development"
+
     SQLITE_DB_PATH: str = "./data/zele-econometric-models.db"
     PORT: int = 8000
 
     JWT_SECRET_KEY: str = "zele-econometric-models-secret-key-2026"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     class Config:
         env_file = ".env"

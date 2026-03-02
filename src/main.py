@@ -19,18 +19,16 @@ async def lifespan(app: FastAPI):
     """
     settings.validate()
 
-    # Asegurar que el directorio data/ existe (requerido para SQLite en Render)
-    # db_path = Path(settings.SQLITE_DB_PATH)
-    # db_path.parent.mkdir(parents=True, exist_ok=True)
-
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
-
-    try:
-        # seed_database(db)
-    finally:
-        db.close()
-    yield
+    if settings.NODE_ENV != "development":
+        yield
+    else:
+        Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        try:
+            seed_database(db)
+        finally:
+            db.close()
+        yield
 
 
 app = FastAPI(
