@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +18,10 @@ async def lifespan(app: FastAPI):
     Startup event: create tables and execute seed data.
     """
     settings.validate()
+
+    # Asegurar que el directorio data/ existe (requerido para SQLite en Render)
+    db_path = Path(settings.SQLITE_DB_PATH)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
 
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()

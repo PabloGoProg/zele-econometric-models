@@ -160,6 +160,12 @@ class PredictionService:
             ``.predict()`` calls.
         """
         path = ARTIFACTS_DIR / filename
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Modelo no encontrado: {path}\n"
+                "Genera los artefactos ejecutando el notebook notebooks/02_base_model.ipynb "
+                "y asegúrate de que los archivos .pkl estén en src/models/artifacts/v1/"
+            )
         with open(path, "rb") as f:
             return pickle.load(f)
 

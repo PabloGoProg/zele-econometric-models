@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     """Settings for the application."""
 
     SQLITE_DB_PATH: str = "./data/zele-econometric-models.db"
+    PORT: int = 8000
 
     JWT_SECRET_KEY: str = "zele-econometric-models-secret-key-2026"
     JWT_ALGORITHM: str = "HS256"
