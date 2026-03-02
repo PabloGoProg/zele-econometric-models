@@ -3,14 +3,17 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-DATABASE_URL = "sqlite:///./zele.db"
+from src.core import settings
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    f"sqlite:///{settings.SQLITE_DB_PATH}", connect_args={"check_same_thread": False}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
     """Clase base para todos los modelos SQLAlchemy."""
+
     pass
 
 
