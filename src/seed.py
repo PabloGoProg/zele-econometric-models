@@ -7,11 +7,14 @@ from src.models.entities import EconModel, ModelVariable, Variable
 MODELS_DATA = [
     {
         "name": "econ_growth",
+        "display_name": "Determinantes del Crecimiento Económico de Pereira",
         "description": (
-            "Determinantes del Crecimiento Económico de Pereira. "
             "Predice la tasa de crecimiento del PIB (Δln PIB) a partir de "
             "exportaciones, importaciones, remesas, inversión y número de empresas."
         ),
+        "version": "1.0.0",
+        "trained_at": "2025-06-15",
+        "target_variable": "delta_ln_PIB",
         "variables": [
             "delta_ln_EXP",
             "delta_ln_IMP",
@@ -22,12 +25,15 @@ MODELS_DATA = [
     },
     {
         "name": "unemployment",
+        "display_name": "Determinantes de la Tasa de Desempleo en Pereira A.M.",
         "description": (
-            "Determinantes de la Tasa de Desempleo en Pereira A.M. "
             "Predice la variación de la tasa de desempleo (Δln TD) a partir del "
             "crecimiento del PIB, exportaciones, importaciones, pobreza "
             "multidimensional y competitividad departamental."
         ),
+        "version": "1.0.0",
+        "trained_at": "2025-06-15",
+        "target_variable": "delta_ln_TD",
         "variables": [
             "delta_ln_PIB",
             "delta_ln_EXP",
@@ -38,11 +44,14 @@ MODELS_DATA = [
     },
     {
         "name": "business_growth",
+        "display_name": "Determinantes del Crecimiento del Tejido Empresarial",
         "description": (
-            "Determinantes del Crecimiento del Tejido Empresarial. "
             "Predice la variación del número de empresas (Δln EMP) a partir del "
             "crecimiento del PIB, exportaciones y remesas."
         ),
+        "version": "1.0.0",
+        "trained_at": "2025-06-15",
+        "target_variable": "delta_ln_EMP",
         "variables": [
             "delta_ln_PIB",
             "delta_ln_EXP",
@@ -56,41 +65,65 @@ VARIABLES_DATA = {
         "description": "Tasa de cambio logarítmica de las exportaciones",
         "meaning": "Δln(EXP): Variación porcentual aproximada de las exportaciones FOB entre períodos",
         "default_value": 0.05,
+        "min_value": -0.50,
+        "max_value": 0.50,
+        "step": 0.01,
     },
     "delta_ln_IMP": {
         "description": "Tasa de cambio logarítmica de las importaciones",
         "meaning": "Δln(IMP): Variación porcentual aproximada de las importaciones CIF entre períodos",
         "default_value": 0.03,
+        "min_value": -0.50,
+        "max_value": 0.50,
+        "step": 0.01,
     },
     "delta_ln_REM": {
         "description": "Tasa de cambio logarítmica de las remesas",
         "meaning": "Δln(REM): Variación porcentual aproximada de las remesas recibidas entre períodos",
         "default_value": 0.02,
+        "min_value": -0.50,
+        "max_value": 0.50,
+        "step": 0.01,
     },
     "delta_ln_INV": {
         "description": "Tasa de cambio logarítmica de la inversión neta",
         "meaning": "Δln(INV): Variación porcentual aproximada de la inversión neta en sociedades entre períodos",
         "default_value": 0.01,
+        "min_value": -1.00,
+        "max_value": 1.00,
+        "step": 0.01,
     },
     "delta_ln_EMP": {
         "description": "Tasa de cambio logarítmica del número de empresas",
         "meaning": "Δln(EMP): Variación porcentual aproximada del total de empresas activas entre períodos",
         "default_value": 0.04,
+        "min_value": -0.30,
+        "max_value": 0.30,
+        "step": 0.01,
     },
     "delta_ln_PIB": {
         "description": "Tasa de cambio logarítmica del PIB",
         "meaning": "Δln(PIB): Variación porcentual aproximada del PIB a precios corrientes entre períodos",
         "default_value": 0.07,
+        "min_value": -0.30,
+        "max_value": 0.30,
+        "step": 0.01,
     },
     "IPM": {
         "description": "Incidencia de Pobreza Multidimensional de Risaralda",
         "meaning": "IPM: Porcentaje de la población en situación de pobreza multidimensional",
         "default_value": 15.0,
+        "min_value": 0.0,
+        "max_value": 60.0,
+        "step": 0.5,
     },
     "IDC": {
         "description": "Índice de Competitividad Departamental (valor normalizado)",
         "meaning": "IDC: Indicador compuesto de competitividad territorial de Risaralda",
         "default_value": 5.5,
+        "min_value": 0.0,
+        "max_value": 10.0,
+        "step": 0.1,
     },
 }
 
@@ -107,6 +140,9 @@ def seed_database(db: Session) -> None:
             description=var_info["description"],
             meaning=var_info["meaning"],
             default_value=var_info["default_value"],
+            min_value=var_info["min_value"],
+            max_value=var_info["max_value"],
+            step=var_info["step"],
         )
         db.add(variable)
         variables_map[var_name] = variable
@@ -116,7 +152,11 @@ def seed_database(db: Session) -> None:
     for model_data in MODELS_DATA:
         model = EconModel(
             name=model_data["name"],
+            display_name=model_data["display_name"],
             description=model_data["description"],
+            version=model_data["version"],
+            trained_at=model_data["trained_at"],
+            target_variable=model_data["target_variable"],
         )
         db.add(model)
         db.flush()
