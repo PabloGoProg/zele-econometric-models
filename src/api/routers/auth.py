@@ -21,6 +21,7 @@ from src.services.auth_service import (
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 COOKIE_NAME = "access_token"
+_IS_PRODUCTION = settings.NODE_ENV == "production"
 
 
 def _set_auth_cookie(response: Response, token: str) -> None:
@@ -29,8 +30,8 @@ def _set_auth_cookie(response: Response, token: str) -> None:
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        samesite="lax",
-        secure=False,
+        samesite="none" if _IS_PRODUCTION else "lax",
+        secure=_IS_PRODUCTION,
         max_age=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
     )
@@ -102,8 +103,8 @@ def logout(response: Response):
     response.delete_cookie(
         key=COOKIE_NAME,
         httponly=True,
-        samesite="lax",
-        secure=False,
+        samesite="none" if _IS_PRODUCTION else "lax",
+        secure=_IS_PRODUCTION,
         path="/",
     )
 
