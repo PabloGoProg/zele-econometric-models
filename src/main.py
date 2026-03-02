@@ -20,14 +20,14 @@ async def lifespan(app: FastAPI):
     settings.validate()
 
     # Asegurar que el directorio data/ existe (requerido para SQLite en Render)
-    db_path = Path(settings.SQLITE_DB_PATH)
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # db_path = Path(settings.SQLITE_DB_PATH)
+    # db_path.parent.mkdir(parents=True, exist_ok=True)
 
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
     try:
-        seed_database(db)
+        # seed_database(db)
     finally:
         db.close()
     yield
@@ -47,10 +47,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
