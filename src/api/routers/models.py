@@ -66,6 +66,23 @@ def get_model_schema(model_id: int, db: Session = Depends(get_db)):
     )
 
 
+@router.get(
+    "/{model_id}/variables",
+    response_model=list[VariableSchemaItem],
+    summary="Variables del modelo",
+    description="Retorna las variables de entrada del modelo con metadata para UI.",
+)
+def get_model_variables(model_id: int, db: Session = Depends(get_db)):
+    econ_model = db.query(EconModel).filter(EconModel.id == model_id).first()
+    if not econ_model:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Modelo no encontrado",
+        )
+
+    return [VariableSchemaItem.model_validate(v) for v in econ_model.variables]
+
+
 @router.post(
     "/{model_id}/predict",
     response_model=PredictionResponse,

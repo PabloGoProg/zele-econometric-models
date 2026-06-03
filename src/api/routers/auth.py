@@ -1,6 +1,7 @@
 """Rutas de autenticación: registro, inicio de sesión y cierre de sesión."""
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from src.core import settings
@@ -49,7 +50,8 @@ def register(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    existing = db.query(User).filter(User.email == request.email).first()
+    email = request.email.lower()
+    existing = db.query(User).filter(func.lower(User.email) == email).first()
     if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -58,7 +60,7 @@ def register(
 
     user = User(
         name=request.name,
-        email=request.email,
+        email=email,
         password=hash_password(request.password),
     )
     db.add(user)
@@ -81,7 +83,9 @@ def login(
     response: Response,
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.email == request.email).first()
+    user = (
+        db.query(User).filter(func.lower(User.email) == request.email.lower()).first()
+    )
     if not user or not verify_password(request.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

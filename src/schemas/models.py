@@ -18,8 +18,10 @@ class VariableSchemaItem(BaseModel):
     """Descripción de una variable dentro del schema de un modelo."""
 
     name: str
+    display_name: str
     description: str
     meaning: str
+    value_type: str
     default_value: float
     min: float = Field(..., validation_alias="min_value")
     max: float = Field(..., validation_alias="max_value")
