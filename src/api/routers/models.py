@@ -1,4 +1,4 @@
-"""Rutas para listado de modelos, schema y predicción genérica."""
+"""Routes for model listing, schemas, variables, and generic prediction."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -15,7 +15,7 @@ from src.schemas.predictions import PredictionResponse
 from src.services.prediction_service import DB_NAME_TO_KEY, PredictionService
 from src.services.rate_limiter import check_rate_limit
 
-router = APIRouter(prefix="/models", tags=["Modelos"])
+router = APIRouter(prefix="/models", tags=["Models"])
 
 _prediction_service = PredictionService()
 
@@ -23,8 +23,8 @@ _prediction_service = PredictionService()
 @router.get(
     "",
     response_model=list[ModelListItem],
-    summary="Listar modelos",
-    description="Retorna la lista de modelos econométricos disponibles.",
+    summary="List models",
+    description="Return the available econometric models.",
 )
 def list_models(db: Session = Depends(get_db)):
     models = db.query(EconModel).all()
@@ -34,8 +34,8 @@ def list_models(db: Session = Depends(get_db)):
 @router.get(
     "/{model_id}/schema",
     response_model=ModelSchemaResponse,
-    summary="Schema del modelo",
-    description="Retorna el schema completo de un modelo con sus variables y metadata.",
+    summary="Model schema",
+    description="Return the full model schema with variables and metadata.",
 )
 def get_model_schema(model_id: int, db: Session = Depends(get_db)):
     econ_model = db.query(EconModel).filter(EconModel.id == model_id).first()
@@ -46,6 +46,7 @@ def get_model_schema(model_id: int, db: Session = Depends(get_db)):
         )
 
     model_key = DB_NAME_TO_KEY.get(econ_model.name)
+    # Catalog rows can exist before an artifact is wired into MODEL_CONFIGS.
     r_squared = _prediction_service.get_r_squared(model_key) if model_key else 0.0
 
     variables = [
@@ -69,8 +70,8 @@ def get_model_schema(model_id: int, db: Session = Depends(get_db)):
 @router.get(
     "/{model_id}/variables",
     response_model=list[VariableSchemaItem],
-    summary="Variables del modelo",
-    description="Retorna las variables de entrada del modelo con metadata para UI.",
+    summary="Model variables",
+    description="Return the model input variables with UI metadata.",
 )
 def get_model_variables(model_id: int, db: Session = Depends(get_db)):
     econ_model = db.query(EconModel).filter(EconModel.id == model_id).first()
@@ -86,11 +87,11 @@ def get_model_variables(model_id: int, db: Session = Depends(get_db)):
 @router.post(
     "/{model_id}/predict",
     response_model=PredictionResponse,
-    summary="Predicción genérica",
+    summary="Generic prediction",
     description=(
-        "Ejecuta una predicción para el modelo indicado. "
-        "El body debe contener un diccionario de valores por variable. "
-        "Las variables no enviadas usarán los valores guardados del usuario o los defaults."
+        "Run a prediction for the selected model. The request body must contain "
+        "a dictionary of values keyed by variable name. Omitted variables use "
+        "the user's saved values or the seeded defaults."
     ),
 )
 def predict(

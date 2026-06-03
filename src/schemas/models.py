@@ -1,10 +1,10 @@
-"""Schemas para los endpoints de modelos (listado y schema)."""
+"""Schemas for model listing, schema, variables, and generic prediction APIs."""
 
 from pydantic import BaseModel, Field
 
 
 class ModelListItem(BaseModel):
-    """Elemento del listado de modelos."""
+    """Compact item returned by the model listing endpoint."""
 
     id: int
     name: str
@@ -15,7 +15,7 @@ class ModelListItem(BaseModel):
 
 
 class VariableSchemaItem(BaseModel):
-    """Descripción de una variable dentro del schema de un modelo."""
+    """Variable metadata exposed in model schema responses."""
 
     name: str
     display_name: str
@@ -31,7 +31,7 @@ class VariableSchemaItem(BaseModel):
 
 
 class ModelSchemaResponse(BaseModel):
-    """Schema completo de un modelo con sus variables y metadata."""
+    """Full model schema with model metadata and input variables."""
 
     id: int
     name: str
@@ -45,8 +45,8 @@ class ModelSchemaResponse(BaseModel):
 
 
 class GenericPredictRequest(BaseModel):
-    """Solicitud genérica de predicción: diccionario de valores por variable."""
+    """Generic prediction request keyed by variable name."""
 
     values: dict[str, float] = Field(
-        ..., description="Valores de las variables para la predicción"
+        ..., description="Variable values to use for the prediction"
     )

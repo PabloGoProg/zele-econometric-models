@@ -1,4 +1,4 @@
-"""Seed de datos iniciales: modelos econométricos y sus variables."""
+"""Initial seed data for econometric models and their variables."""
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -220,6 +220,8 @@ VARIABLES_DATA = {
 
 def _ensure_variable_metadata_columns(db: Session) -> None:
     """Add new metadata columns to an existing SQLite variables table."""
+    # SQLite cannot add several columns in one ALTER TABLE statement, so each
+    # backward-compatible metadata column is checked and added independently.
     existing_columns = {
         row[1] for row in db.execute(text("PRAGMA table_info(variables)")).all()
     }
@@ -242,7 +244,7 @@ def _ensure_variable_metadata_columns(db: Session) -> None:
 
 
 def seed_database(db: Session) -> None:
-    """Pobla o actualiza la base de datos con modelos y variables iniciales."""
+    """Create or update the initial model catalog and variable metadata."""
     _ensure_variable_metadata_columns(db)
 
     variables_map: dict[str, Variable] = {}
@@ -278,6 +280,8 @@ def seed_database(db: Session) -> None:
         db.flush()
 
         for var_name in model_data["variables"]:
+            # Preserve existing relationship rows so repeated development
+            # startups can refresh metadata without duplicating links.
             existing_relation = (
                 db.query(ModelVariable)
                 .filter(

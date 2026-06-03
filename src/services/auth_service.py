@@ -1,4 +1,4 @@
-"""Servicio de autenticación con JWT."""
+"""JWT authentication helpers and current-user dependency."""
 
 from datetime import datetime, timedelta, timezone
 
@@ -61,6 +61,7 @@ def get_current_user(
         if sub is None:
             raise credentials_exception
 
+        # Tokens store the database user id as a string subject claim.
         user_id = int(sub)
     except (JWTError, ValueError):
         raise credentials_exception

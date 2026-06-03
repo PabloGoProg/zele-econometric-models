@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,14 +13,14 @@ from .seed import seed_database
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Startup event: create tables and execute seed data.
-    """
+    """Validate settings and bootstrap local development data."""
     settings.validate()
 
     if settings.NODE_ENV != "development":
         yield
     else:
+        # Only development owns schema creation and catalog seeding; deployed
+        # environments are expected to start from a prepared database.
         Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         try:
@@ -32,12 +31,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="ZELE Modelos Econométricos",
+    title="ZELE Econometric Models",
     description=(
-        "API para la predicción de indicadores económicos de Pereira "
-        "mediante modelos econométricos OLS. Expone tres modelos: "
-        "crecimiento económico (PIB), tasa de desempleo y tejido empresarial. "
-        "Requiere autenticación JWT para acceder a las predicciones."
+        "API for predicting economic indicators for Pereira with OLS "
+        "econometric models. It exposes models for economic growth, "
+        "unemployment, and business growth. JWT authentication is required "
+        "for prediction access."
     ),
     version="0.1.0",
     lifespan=lifespan,

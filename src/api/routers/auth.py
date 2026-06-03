@@ -1,4 +1,4 @@
-"""Rutas de autenticación: registro, inicio de sesión y cierre de sesión."""
+"""Authentication routes for registration, login, logout, and profile lookup."""
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func
@@ -19,14 +19,16 @@ from src.services.auth_service import (
     verify_password,
 )
 
-router = APIRouter(prefix="/auth", tags=["Autenticación"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 COOKIE_NAME = "access_token"
 _IS_PRODUCTION = settings.NODE_ENV == "production"
 
 
 def _set_auth_cookie(response: Response, token: str) -> None:
-    """Setea la cookie httpOnly con el JWT."""
+    """Set the httpOnly JWT cookie used by browser clients."""
+    # Cross-site production deployments need SameSite=None and Secure; local
+    # development keeps lax cookies so HTTP localhost flows continue to work.
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
@@ -42,8 +44,8 @@ def _set_auth_cookie(response: Response, token: str) -> None:
     "/register",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Registro de usuario",
-    description="Crea una nueva cuenta de usuario y setea la cookie de sesión.",
+    summary="User registration",
+    description="Create a user account and set the session cookie.",
 )
 def register(
     request: UserRegisterRequest,
@@ -75,8 +77,8 @@ def register(
 @router.post(
     "/login",
     response_model=UserResponse,
-    summary="Inicio de sesión",
-    description="Autentica al usuario y setea la cookie httpOnly con el JWT.",
+    summary="User login",
+    description="Authenticate the user and set the httpOnly JWT cookie.",
 )
 def login(
     request: UserLoginRequest,
@@ -100,8 +102,8 @@ def login(
 @router.post(
     "/logout",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Cierre de sesión",
-    description="Elimina la cookie de autenticación.",
+    summary="User logout",
+    description="Delete the authentication cookie.",
 )
 def logout(response: Response):
     response.delete_cookie(
@@ -116,8 +118,8 @@ def logout(response: Response):
 @router.get(
     "/me",
     response_model=UserResponse,
-    summary="Perfil de usuario",
-    description="Retorna la información del usuario autenticado.",
+    summary="Current user profile",
+    description="Return the authenticated user's profile.",
 )
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
