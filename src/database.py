@@ -1,4 +1,4 @@
-"""Configuración de la base de datos SQLite con SQLAlchemy."""
+"""SQLite database configuration for SQLAlchemy."""
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
@@ -12,13 +12,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
-    """Clase base para todos los modelos SQLAlchemy."""
+    """Base class for all SQLAlchemy ORM models."""
 
     pass
 
 
 def get_db():
-    """Generador de sesiones de base de datos para inyección de dependencias."""
+    """Yield a database session for FastAPI dependency injection."""
     db = SessionLocal()
     try:
         yield db

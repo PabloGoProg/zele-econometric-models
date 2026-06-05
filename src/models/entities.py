@@ -64,7 +64,7 @@ class EconModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), unique=True, nullable=False)
     display_name = Column(String(300), nullable=False)
-    description = Column(String(500), nullable=False)
+    description = Column(String(1500), nullable=False)
     version = Column(String(20), nullable=False, default="1.0.0")
     trained_at = Column(String(20), nullable=False, default="2025-06-15")
     target_variable = Column(String(100), nullable=False, default="")
@@ -86,8 +86,10 @@ class Variable(Base):
     Attributes:
         id: Unique identifier for the variable.
         name: Name of the variable.
+        display_name: Human-readable name of the variable.
         description: Description of the variable.
         meaning: Meaning of the variable.
+        value_type: Type of value expected by the UI.
         default_value: Default value of the variable.
         min_value: Minimum value of the variable.
         max_value: Maximum value of the variable.
@@ -100,8 +102,10 @@ class Variable(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
-    description = Column(String(300), nullable=False)
-    meaning = Column(String(500), nullable=False)
+    display_name = Column(String(200), nullable=False, default="")
+    description = Column(String(1000), nullable=False)
+    meaning = Column(String(1000), nullable=False)
+    value_type = Column(String(100), nullable=False, default="standardized_numeric")
     default_value = Column(Float, nullable=False, default=0.0)
     min_value = Column(Float, nullable=False, default=-1.0)
     max_value = Column(Float, nullable=False, default=1.0)
