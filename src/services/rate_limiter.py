@@ -1,4 +1,4 @@
-"""Rate limiter in-memory simple para predicciones."""
+"""Simple in-memory rate limiter for prediction requests."""
 
 import math
 import time
@@ -16,7 +16,7 @@ _user_timestamps: dict[int, list[float]] = defaultdict(list)
 
 
 def _cleanup(user_id: int) -> list[float]:
-    """Elimina timestamps fuera de la ventana activa."""
+    """Remove timestamps outside the active rate-limit window."""
     cutoff = time.time() - WINDOW_SECONDS
     _user_timestamps[user_id] = [
         ts for ts in _user_timestamps[user_id] if ts > cutoff
@@ -28,7 +28,7 @@ def check_rate_limit(
     response: Response,
     current_user: User = Depends(get_current_user),
 ) -> User:
-    """Dependencia que verifica el rate limit antes de permitir la predicción."""
+    """Validate the current user's rate limit before allowing prediction."""
     active = _cleanup(current_user.id)
 
     remaining = MAX_REQUESTS - len(active)
@@ -36,6 +36,8 @@ def check_rate_limit(
     response.headers["X-RateLimit-Remaining"] = str(max(remaining, 0))
 
     if remaining <= 0:
+        # Retry-After is based on the oldest request that is still inside the
+        # rolling window, which is when one request slot becomes available.
         oldest = min(active)
         retry_after = math.ceil(oldest + WINDOW_SECONDS - time.time())
         response.headers["Retry-After"] = str(max(retry_after, 1))

@@ -13,11 +13,11 @@ class UserRegisterRequest(BaseModel):
     """
 
     name: str = Field(
-        ..., min_length=2, max_length=100, description="Nombre del usuario"
+        ..., min_length=2, max_length=100, description="User name"
     )
-    email: EmailStr = Field(..., description="Correo electrónico del usuario")
+    email: EmailStr = Field(..., description="User email address")
     password: str = Field(
-        ..., min_length=6, max_length=128, description="Contraseña del usuario"
+        ..., min_length=6, max_length=128, description="User password"
     )
 
 
@@ -29,8 +29,8 @@ class UserLoginRequest(BaseModel):
         password: Password of the user.
     """
 
-    email: EmailStr = Field(..., description="Correo electrónico del usuario")
-    password: str = Field(..., description="Contraseña del usuario")
+    email: EmailStr = Field(..., description="User email address")
+    password: str = Field(..., description="User password")
 
 
 class TokenResponse(BaseModel):
@@ -41,8 +41,8 @@ class TokenResponse(BaseModel):
         token_type: Type of token.
     """
 
-    access_token: str = Field(..., description="Token JWT de acceso")
-    token_type: str = Field(default="bearer", description="Tipo de token")
+    access_token: str = Field(..., description="JWT access token")
+    token_type: str = Field(default="bearer", description="Token type")
 
 
 class UserResponse(BaseModel):

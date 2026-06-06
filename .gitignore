@@ -23,3 +23,6 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+# Runtime data
+data/zele-econometric-models.db
