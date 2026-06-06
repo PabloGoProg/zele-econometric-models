@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,21 +14,22 @@ from .seed import seed_database
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Validate settings and bootstrap local development data."""
+    """Validate settings and bootstrap SQLite when needed."""
     settings.validate()
 
-    if settings.NODE_ENV != "development":
-        yield
-    else:
-        # Only development owns schema creation and catalog seeding; deployed
-        # environments are expected to start from a prepared database.
+    db_path = Path(settings.SQLITE_DB_PATH)
+    should_bootstrap = settings.NODE_ENV == "development" or not db_path.exists()
+
+    if should_bootstrap:
+        db_path.parent.mkdir(parents=True, exist_ok=True)
         Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         try:
             seed_database(db)
         finally:
             db.close()
-        yield
+
+    yield
 
 
 app = FastAPI(
